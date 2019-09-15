@@ -1,0 +1,86 @@
+﻿@model IEnumerable<ProductCatalogDataAccess.Models.Product>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table id="products" class="table">
+    <thead>
+        <tr>
+            <th>
+                Product Name
+            </th>
+            <th>
+                Supplier Name
+            </th>
+            <th>
+                Price for one unit
+            </th>
+            <th>
+                Units In Stock
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+
+</table>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#products").DataTable({
+                ajax: {
+                    url: "http://localhost:54891/api/Products/",
+                    dataSrc: ""
+                    },
+                columns: [
+                    {
+                        data: "productName",
+                        render: function (data, type, product) {
+                            return "<a href='/Products/Details/" + product.productId + "'>" + product.productName + "</a>"
+                        }
+                    },
+                    {
+                        data: "supplier.supplierName",
+                        render: function (data, type, product) {
+                            return "<a href='/Suppliers/Details/" + product.supplierId + "'>" + product.supplier.supplierName + "</a>"
+                        }
+                    },
+                    {
+                        data: "unitPrice"
+                    },
+                    {
+                        data: "unitsInStock"
+                    },
+                    {
+                        data: "productId",
+                        render: function (data, type, product) {
+                            return "<button data-product-id='" + data + "' class='btn btn-danger js-delete'>Delete</button> <a href='/Products/Edit/" + product.productId + "'><button class='btn btn-primar'>Edit</button></a>"
+                        }
+                    }
+
+                ]
+            });
+            $("#products").on("click", ".js-delete", function () {
+                var button = $(this);
+                bootbox.confirm("are you sure?!", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "http://localhost:54891/api/Products/" + button.attr("data-product-id"),
+                            method: "DELETE",
+                            success: function () {
+                                button.parents("tr").remove();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

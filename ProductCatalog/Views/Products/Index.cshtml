@@ -1,0 +1,102 @@
+﻿@model IEnumerable<ProductCatalogDataAccess.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@if (!Model.Any())
+{
+    <h2>No product in stock</h2>
+}
+else
+{
+    <table id="products" class="table">
+        <thead>
+            <tr>
+                <th>
+                    Product Name
+                </th>
+                <th>
+                    Supplier Name
+                </th>
+                <th>
+                    Minimum amount to sell
+                </th>
+                <th>
+                    Minimum amount to store
+                </th>
+                <th>
+                    Price for one unit
+                </th>
+                <th>
+                    Units In Stock
+                </th>
+                <th>
+                    Amount of units in one order
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+
+        @foreach (var item in Model)
+        {
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Supplier.SupplierName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.QuantityPerUnit)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ReorderLevel)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UnitPrice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UnitsInStock)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UnitsOnOrder)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.ProductId }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.ProductId }) |
+                        <button data-product-id="@item.ProductId" class="btn-link js-delete">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        }
+
+    </table>
+}
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#products").DataTable();
+            $("#products").on("click", ".js-delete", function () {
+                var button = $(this);
+                bootbox.confirm("are you sure?!", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "http://localhost:54891/api/Products/" + button.attr("data-product-id"),
+                            method: "DELETE",
+                            success: function () {
+                                button.parents("tr").remove();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
