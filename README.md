@@ -13,4 +13,4 @@ note: Connection String is provided in all projects in solutions so once you mod
 i used both MVC and WebApi together to give you channce to evaluate me on both technologies :)
 working hours arround 10 to 12
 wish you be satisfied during reading my code
-finally thank you for reading and evaluating my job and have greate day
+finally thank you for reading and evaluating my job and have greate day :)
